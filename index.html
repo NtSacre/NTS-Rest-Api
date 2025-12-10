@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NTS REST API</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#2f2f2f" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.css" />
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+ <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Header mobile -->
+    <header class="mobile-header">
+      <h1>NTS REST API</h1>
+      <button class="theme-toggle-mobile" onclick="toggleTheme()">
+        <span id="themeIconMobile">🌙</span>
+      </button>
+    </header>
+
+    <!-- Sidebar desktop -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>NTS REST API</h2>
+        <button class="theme-toggle-desktop" onclick="toggleTheme()">
+          <span id="themeIconDesktop">🌙</span>
+        </button>
+      </div>
+      <nav>
+        <button class="tab-btn active" data-tab="request">📝 Requête</button>
+        <button class="tab-btn" data-tab="response">📊 Réponse</button>
+        <button class="tab-btn" data-tab="history">🕐 Historique</button>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+      <!-- Onglet Requête -->
+      <section id="request" class="tab active">
+        <h3>Nouvelle requête</h3>
+        <div class="request-fields">
+          <select id="method">
+            <option>GET</option>
+            <option>POST</option>
+            <option>PUT</option>
+            <option>DELETE</option>
+          </select>
+          <input type="text" id="url" placeholder="https://api.example.com/endpoint" />
+        </div>
+
+        <h4>Headers</h4>
+        <select id="commonHeaders">
+          <option value="">-- Choisir un header courant --</option>
+          <option value="Content-Type: application/json">Content-Type: application/json</option>
+          <option value="Accept: application/json">Accept: application/json</option>
+          <option value="Authorization: Bearer token">Authorization: Bearer token</option>
+          <option value="User-Agent: NTS-API-Test">User-Agent: NTS-API-Test</option>
+        </select>
+        <div id="headersList"></div>
+        <button id="addHeaderBtn" type="button">+ Ajouter un header</button>
+
+        <h4>Body JSON</h4>
+        <textarea id="bodyInput" placeholder='{"key": "value"}'></textarea>
+
+        <button onclick="sendRequest()">🚀 Envoyer la requête</button>
+      </section>
+
+      <!-- Onglet Réponse -->
+      <section id="response" class="tab">
+        <h3>Réponse API</h3>
+        <pre><code id="result" class="language-json">Aucune réponse pour le moment. Envoyez une requête pour voir le résultat ici.</code></pre>
+        <button onclick="downloadResponse()">⬇️ Télécharger la réponse</button>
+      </section>
+
+      <!-- Onglet Historique -->
+      <section id="history" class="tab">
+        <h3>Historique des requêtes</h3>
+        <div id="historyList"></div>
+      </section>
+    </main>
+
+    <!-- Navigation mobile -->
+    <div class="mobile-nav">
+      <nav>
+        <button class="tab-btn active" data-tab="request">📝<br>Requête</button>
+        <button class="tab-btn" data-tab="response">📊<br>Réponse</button>
+        <button class="tab-btn" data-tab="history">🕐<br>Historique</button>
+      </nav>
+    </div>
+  </div>
+
+  <!-- Template pour headers dynamiques -->
+  <template id="headerItemTemplate">
+    <div class="header-item">
+      <input type="text" placeholder="Header Key" class="header-key" />
+      <input type="text" placeholder="Header Value" class="header-value" />
+      <button type="button" class="remove-header">Supprimer</button>
+    </div>
+  </template>
+
+<script src="script.js"></script>
+</body>
+</html>
