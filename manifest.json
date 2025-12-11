@@ -1,6 +1,6 @@
 {
   "name": "NTS API Test",
-  "short_name": "NTS Rest API",
+  "short_name": "NTS API REST",
   "start_url": ".",
   "display": "standalone",
   "background_color": "#ffffff",

@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NTS REST API</title>
+  <title>NTS API REST</title>
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#2f2f2f" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@1/themes/prism-tomorrow.css" />
@@ -15,7 +16,7 @@
   <div class="app">
     <!-- Header mobile -->
     <header class="mobile-header">
-      <h1>NTS REST API</h1>
+      <h1>NTS API REST</h1>
       <button class="theme-toggle-mobile" onclick="toggleTheme()">
         <span id="themeIconMobile">🌙</span>
       </button>
@@ -24,7 +25,7 @@
     <!-- Sidebar desktop -->
     <aside class="sidebar">
       <div class="sidebar-header">
-        <h2>NTS REST API</h2>
+        <h2>NTS API REST</h2>
         <button class="theme-toggle-desktop" onclick="toggleTheme()">
           <span id="themeIconDesktop">🌙</span>
         </button>
@@ -58,6 +59,10 @@
           <option value="Accept: application/json">Accept: application/json</option>
           <option value="Authorization: Bearer token">Authorization: Bearer token</option>
           <option value="User-Agent: NTS-API-Test">User-Agent: NTS-API-Test</option>
+            <option value="Cache-Control: no-cache">Cache-Control: no-cache</option>
+          <option value="Accept-Language: fr-FR">Accept-Language: fr-FR</option>
+          <option value="X-Requested-With: XMLHttpRequest">X-Requested-With: XMLHttpRequest</option>
+
         </select>
         <div id="headersList"></div>
         <button id="addHeaderBtn" type="button">+ Ajouter un header</button>

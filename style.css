@@ -366,6 +366,35 @@
       background: var(--accent);
     }
 
+    /* Badges de statut */
+.badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: white;
+}
+.badge.success { background: #28a745; } /* vert */
+.badge.error { background: #dc3545; }   /* rouge */
+
+/* Loader simple (optionnel si tu veux un spinner animé) */
+.loader {
+  border: 3px solid var(--bg-tertiary);
+  border-top: 3px solid var(--accent);
+  border-radius: 50%;
+  width: 18px;
+  height: 18px;
+  animation: spin 1s linear infinite;
+  margin-left: 0.5rem;
+  display: inline-block;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
     /* Responsive */
     @media (max-width: 768px) {
       .mobile-header {
