@@ -23,7 +23,9 @@ function initTheme() {
   if (saved) {
     applyTheme(saved);
   } else {
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)"
+    ).matches;
     applyTheme(prefersDark ? "dark" : "light");
   }
 }
@@ -33,15 +35,17 @@ function initTabs() {
   const buttons = document.querySelectorAll(".tab-btn");
   const tabs = document.querySelectorAll(".tab");
 
-  buttons.forEach(btn => {
+  buttons.forEach((btn) => {
     btn.addEventListener("click", () => {
       const target = btn.dataset.tab;
-      tabs.forEach(tab => tab.classList.remove("active"));
-      buttons.forEach(b => b.classList.remove("active"));
+      tabs.forEach((tab) => tab.classList.remove("active"));
+      buttons.forEach((b) => b.classList.remove("active"));
       document.getElementById(target).classList.add("active");
 
       // Active tous les boutons liés au même onglet
-      document.querySelectorAll(`.tab-btn[data-tab="${target}"]`).forEach(b => b.classList.add("active"));
+      document
+        .querySelectorAll(`.tab-btn[data-tab="${target}"]`)
+        .forEach((b) => b.classList.add("active"));
     });
   });
 }
@@ -54,13 +58,15 @@ function addHeaderRow(key = "", value = "") {
   const row = node.querySelector(".header-item");
   row.querySelector(".header-key").value = key;
   row.querySelector(".header-value").value = value;
-  row.querySelector(".remove-header").addEventListener("click", () => row.remove());
+  row
+    .querySelector(".remove-header")
+    .addEventListener("click", () => row.remove());
   list.appendChild(node);
 }
 
 function collectHeaders() {
   const headers = {};
-  document.querySelectorAll(".header-item").forEach(row => {
+  document.querySelectorAll(".header-item").forEach((row) => {
     const key = row.querySelector(".header-key").value.trim();
     const value = row.querySelector(".header-value").value.trim();
     if (key) headers[key] = value;
@@ -92,23 +98,50 @@ function renderHistory() {
 
   const history = getHistory();
   if (history.length === 0) {
-    list.innerHTML = '<div class="empty-state"><p>Aucune requête dans l\'historique</p></div>';
+    list.innerHTML =
+      '<div class="empty-state"><p>Aucune requête dans l\'historique</p></div>';
     return;
   }
 
   list.innerHTML = "";
+
   history.forEach((item, idx) => {
-    const statusBadge = item.status === "error"
-      ? '<span class="badge error">❌ Erreur</span>'
-      : `<span class="badge success">✅ ${item.status}</span>`;
+    const status = item.status;
+    const statusText = item.statusText || "";
+    // Déterminer type de badge
+    let badgeClass = "success";
+    let badgeLabel = "";
+
+    if (status === "network-error") {
+      badgeClass = "error";
+      badgeLabel = "❌ Network Error";
+    } else if (typeof status === "number") {
+      if (status >= 200 && status < 300) {
+        badgeClass = "success";
+        badgeLabel = `✅ ${status} ${statusText || "OK"}`;
+      } else if (status >= 300 && status < 400) {
+        badgeClass = "warning";
+        badgeLabel = `⚠️ ${status} ${statusText || "Redirect"}`;
+      } else if (status >= 400) {
+        badgeClass = "error";
+        badgeLabel = `❌ ${status} ${statusText || "Error"}`;
+      }
+    } else {
+      // fallback si status est une string inattendue
+      badgeClass = "warning";
+      badgeLabel = `⚠️ ${String(status)}`;
+    }
 
     const div = document.createElement("div");
     div.className = "history-item";
     div.innerHTML = `
-      <h4>${item.method} ${item.url} ${statusBadge}</h4>
+      <h4>
+        ${item.method} ${item.url}
+        <span class="badge ${badgeClass}">${badgeLabel}</span>
+      </h4>
       <small>${item.date}</small>
       <pre>${JSON.stringify(item.headers, null, 2)}</pre>
-      ${item.body ? `<pre>${item.body}</pre>` : ''}
+      ${item.body ? `<pre>${item.body}</pre>` : ""}
       <div class="history-actions">
         <button type="button" data-idx="${idx}" class="replay">🔄 Rejouer</button>
         <button type="button" data-idx="${idx}" class="delete">🗑️ Supprimer</button>
@@ -117,7 +150,7 @@ function renderHistory() {
     list.appendChild(div);
   });
 
-  list.querySelectorAll(".replay").forEach(btn => {
+  list.querySelectorAll(".replay").forEach((btn) => {
     btn.addEventListener("click", () => {
       const idx = +btn.dataset.idx;
       const item = getHistory()[idx];
@@ -126,20 +159,27 @@ function renderHistory() {
 
       const listEl = document.getElementById("headersList");
       listEl.innerHTML = "";
-      Object.entries(item.headers || {}).forEach(([k, v]) => addHeaderRow(k, v));
+      Object.entries(item.headers || {}).forEach(([k, v]) =>
+        addHeaderRow(k, v)
+      );
       if (!listEl.children.length) addHeaderRow();
 
       document.getElementById("bodyInput").value = item.body || "";
 
-      // Switch vers l’onglet Requête
-      document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-      document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+      document
+        .querySelectorAll(".tab")
+        .forEach((tab) => tab.classList.remove("active"));
+      document
+        .querySelectorAll(".tab-btn")
+        .forEach((btn) => btn.classList.remove("active"));
       document.getElementById("request").classList.add("active");
-      document.querySelectorAll('[data-tab="request"]').forEach(b => b.classList.add("active"));
+      document
+        .querySelectorAll('[data-tab="request"]')
+        .forEach((b) => b.classList.add("active"));
     });
   });
 
-  list.querySelectorAll(".delete").forEach(btn => {
+  list.querySelectorAll(".delete").forEach((btn) => {
     btn.addEventListener("click", () => {
       const idx = +btn.dataset.idx;
       const history = getHistory();
@@ -152,18 +192,23 @@ function renderHistory() {
 
 // --- Loader ---
 function showLoader() {
-  const btn = document.querySelector('#request button[onclick="sendRequest()"]');
+  const btn = document.querySelector(
+    '#request button[onclick="sendRequest()"]'
+  );
   btn.disabled = true;
-  btn.innerHTML = '⏳ Envoi en cours...';
+  btn.innerHTML = "⏳ Envoi en cours...";
 }
 
 function hideLoader() {
-  const btn = document.querySelector('#request button[onclick="sendRequest()"]');
+  const btn = document.querySelector(
+    '#request button[onclick="sendRequest()"]'
+  );
   btn.disabled = false;
-  btn.innerHTML = '🚀 Envoyer la requête';
+  btn.innerHTML = "🚀 Envoyer la requête";
 }
 
 // --- Envoi de requêtes ---
+// --- Envoi de requêtes amélioré ---
 async function sendRequest() {
   const method = document.getElementById("method").value;
   const url = document.getElementById("url").value.trim();
@@ -181,33 +226,92 @@ async function sendRequest() {
     const response = await fetch(url, {
       method,
       headers,
-      body: method !== "GET" && body ? body : undefined
+      body: method !== "GET" && body ? body : undefined,
     });
 
-    let data;
     const contentType = response.headers.get("content-type") || "";
-    if (contentType.includes("application/json")) {
-      data = await response.json();
-      renderResultJSON(data);
-      window.lastResponse = data;
+    let output;
+
+    if (response.ok) {
+      // Succès (200, 201, 204, etc.)
+      if (response.status === 204) {
+        // Pas de contenu
+        document.getElementById(
+          "result"
+        ).textContent = `✅ ${response.status} ${response.statusText} (No Content)`;
+        window.lastResponse = `No Content`;
+      } else if (contentType.includes("application/json")) {
+        const data = await response.json();
+        const output = {
+          status: response.status,
+          statusText: response.statusText,
+          body: data,
+        };
+        renderResultJSON(output);
+        window.lastResponse = output;
+      } else {
+        const text = await response.text();
+        const output = `✅ ${response.status} ${response.statusText}\n${text}`;
+        document.getElementById("result").textContent = output;
+        window.lastResponse = output;
+      }
+
+      // Succès ou erreur HTTP (réponse du serveur)
+      saveToHistory({
+        method,
+        url,
+        headers,
+        body,
+        status: response.status,
+        statusText: response.statusText,
+      });
     } else {
-      const text = await response.text();
-      const codeEl = document.getElementById("result");
-      codeEl.textContent = text;
-      window.lastResponse = text;
+     
+      // Erreur HTTP (400, 404, 500, etc.)
+      if (contentType.includes("application/json")) {
+        const errorData = await response.json();
+        const output = {
+          status: response.status,
+          statusText: response.statusText,
+          error: errorData,
+        };
+        renderResultJSON(output);
+        window.lastResponse = output;
+      } else {
+        const errorText = await response.text();
+        const output = `❌ Erreur ${response.status} ${response.statusText}\n${errorText}`;
+        document.getElementById("result").textContent = output;
+        window.lastResponse = output;
+      }
+
+      // Sauvegarder le vrai code HTTP
+      saveToHistory({
+        method,
+        url,
+        headers,
+        body,
+        status: response.status,
+        statusText: response.statusText,
+      });
     }
 
-    saveToHistory({ method, url, headers, body, status: response.status });
-
     // Switch vers l’onglet Réponse
-    document.querySelectorAll(".tab").forEach(tab => tab.classList.remove("active"));
-    document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+    document
+      .querySelectorAll(".tab")
+      .forEach((tab) => tab.classList.remove("active"));
+    document
+      .querySelectorAll(".tab-btn")
+      .forEach((btn) => btn.classList.remove("active"));
     document.getElementById("response").classList.add("active");
-    document.querySelectorAll('[data-tab="response"]').forEach(b => b.classList.add("active"));
-
+    document
+      .querySelectorAll('[data-tab="response"]')
+      .forEach((b) => b.classList.add("active"));
   } catch (err) {
-    document.getElementById("result").textContent = "❌ Erreur : " + err.message;
-    saveToHistory({ method, url, headers, body, status: "error" });
+    // Cas erreur réseau (pas de réponse du serveur)
+    const errorMsg = `❌ Erreur réseau : ${err.message}`;
+    document.getElementById("result").textContent = errorMsg;
+    window.lastResponse = errorMsg;
+    saveToHistory({ method, url, headers, body, status: "network-error" });
   } finally {
     hideLoader();
   }
@@ -226,15 +330,46 @@ function renderResultJSON(obj) {
 // --- Téléchargement ---
 function downloadResponse() {
   if (!window.lastResponse) return;
-  const content = typeof window.lastResponse === 'string'
-    ? window.lastResponse
-    : JSON.stringify(window.lastResponse, null, 2);
+  const content =
+    typeof window.lastResponse === "string"
+      ? window.lastResponse
+      : JSON.stringify(window.lastResponse, null, 2);
   const blob = new Blob([content], { type: "application/json" });
   const link = document.createElement("a");
   link.href = URL.createObjectURL(blob);
   link.download = "response.json";
   link.click();
 }
+
+let deferredPrompt;
+
+window.addEventListener("beforeinstallprompt", (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+
+  // Affiche les boutons install
+  const btnMobile = document.getElementById("installBtnMobile");
+  const btnDesktop = document.getElementById("installBtnDesktop");
+  if (btnMobile) btnMobile.style.display = "inline-block";
+  if (btnDesktop) btnDesktop.style.display = "inline-block";
+
+  function handleInstallClick() {
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then((choice) => {
+      if (choice.outcome === "accepted") {
+        console.log("✅ Installation acceptée");
+      } else {
+        console.log("❌ Installation refusée");
+      }
+      deferredPrompt = null;
+      if (btnMobile) btnMobile.style.display = "none";
+      if (btnDesktop) btnDesktop.style.display = "none";
+    });
+  }
+
+  if (btnMobile) btnMobile.addEventListener("click", handleInstallClick);
+  if (btnDesktop) btnDesktop.addEventListener("click", handleInstallClick);
+});
 
 // --- Init ---
 document.addEventListener("DOMContentLoaded", () => {
@@ -248,12 +383,14 @@ document.addEventListener("DOMContentLoaded", () => {
   renderHistory();
 
   // Bouton "Ajouter un header"
-  document.getElementById("addHeaderBtn").addEventListener("click", () => addHeaderRow());
+  document
+    .getElementById("addHeaderBtn")
+    .addEventListener("click", () => addHeaderRow());
 
   // Headers courants
   document.getElementById("commonHeaders").addEventListener("change", (e) => {
     if (e.target.value) {
-      const [key, value] = e.target.value.split(":").map(s => s.trim());
+      const [key, value] = e.target.value.split(":").map((s) => s.trim());
       addHeaderRow(key, value);
       e.target.value = "";
     }

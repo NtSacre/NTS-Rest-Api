@@ -377,6 +377,8 @@
 }
 .badge.success { background: #28a745; } /* vert */
 .badge.error { background: #dc3545; }   /* rouge */
+.badge.warning { background: #fd7e14; } /* orange */
+
 
 /* Loader simple (optionnel si tu veux un spinner animé) */
 .loader {
@@ -392,6 +394,21 @@
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+.install-btn {
+  background: var(--accent);
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: white;
+  margin-left: 0.5rem;
+  transition: all 0.2s;
+}
+.install-btn:hover {
+  background: var(--accent-hover);
 }
 
 
